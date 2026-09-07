@@ -1,0 +1,6 @@
+{
+  "name": "Check In",
+  "description": "A focused offline task checklist with scheduled check-ins and smart reminders.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

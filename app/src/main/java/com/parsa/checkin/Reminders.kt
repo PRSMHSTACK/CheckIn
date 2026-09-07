@@ -75,19 +75,25 @@ class ReminderEngine(private val context: Context) {
             .putExtra("review", true)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
 
-        val options = ActivityOptions.makeBasic()
-        if (Build.VERSION.SDK_INT >= 34) {
-            options.setPendingIntentBackgroundActivityStartMode(ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED)
+        val creationOptions = ActivityOptions.makeBasic().apply {
+            if (Build.VERSION.SDK_INT >= 34) {
+                setPendingIntentCreatorBackgroundActivityStartMode(ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED)
+            }
+        }
+        val sendOptions = ActivityOptions.makeBasic().apply {
+            if (Build.VERSION.SDK_INT >= 34) {
+                setPendingIntentBackgroundActivityStartMode(ActivityOptions.MODE_BACKGROUND_ACTIVITY_START_ALLOWED)
+            }
         }
 
         val openPendingIntent = PendingIntent.getActivity(
             context, 1, openIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
-            options.toBundle()
+            creationOptions.toBundle()
         )
         if (!silent) {
-            runCatching { openPendingIntent.send(context, 0, null, null, null, null, options.toBundle()) }
-            runCatching { context.startActivity(openIntent, options.toBundle()) }
+            runCatching { openPendingIntent.send(context, 0, null, null, null, null, sendOptions.toBundle()) }
+            runCatching { context.startActivity(openIntent, sendOptions.toBundle()) }
         }
         val builder = NotificationCompat.Builder(context, CHANNEL)
             .setSmallIcon(R.drawable.ic_check)
